@@ -7,16 +7,16 @@
 #define UPPER_MASK 0x80000000UL
 #define LOWER_MASK 0x7fffffffUL
 
-extern void init_genrand(uint32_t seed);
-extern uint32_t genrand_int32(void);
-extern uint32_t get_high_resolution_seed(void);
+void init_MT199937(uint32_t seed);
+uint32_t MT199937_int32(void);
+uint32_t get_seed(void);
 
 #ifdef LIBMT19937_IMPLEMENTATION
 
 static uint32_t mt[N];
 static int mti = N + 1;
 
-void init_genrand(uint32_t seed) {
+void init_MT199937(uint32_t seed) {
     mt[0] = seed;
     for (mti = 1; mti < N; mti++) {
         mt[mti] = (1812433253UL * (mt[mti - 1] ^ (mt[mti - 1] >> 30)) + mti);
@@ -24,7 +24,7 @@ void init_genrand(uint32_t seed) {
     }
 }
 
-uint32_t genrand_int32() {
+uint32_t MT199937_int32() {
     uint32_t y;
     static uint32_t mag01[2] = {0x0UL, MATRIX_A};
 
@@ -54,7 +54,7 @@ uint32_t genrand_int32() {
     return y;
 }
 
-uint32_t get_high_resolution_seed() {
+uint32_t get_seed() {
     struct timespec ts;
     clock_gettime(CLOCK_REALTIME, &ts);
     return (uint32_t)(ts.tv_nsec ^ ts.tv_sec);
